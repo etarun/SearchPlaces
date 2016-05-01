@@ -27,7 +27,8 @@ public class PlaceDetailsInteractorImpl implements PlaceDetailsInteractor{
         if(places.getStatus().isSuccess() && places.getCount() == 1){
             setPlaceDetails(places);
             places.release();
-        } else {
+        }
+        else {
             Log.e(TAG, "Place not found");
             places.release();
         }
