@@ -7,7 +7,9 @@ Android Application to show autocompete and place details using Google Places AP
 
 <b>Screenshots</b>
 ![alt tag](https://github.com/etarun/SearchPlaces/tree/master/screenshots/1.png "First") &nbsp;
+<br>
 ![alt tag](https://github.com/etarun/SearchPlaces/tree/master/screenshots/2.png "Optional title") &nbsp;
+<br>
 ![alt tag](https://github.com/etarun/SearchPlaces/tree/master/screenshots/3.png "Optional title") &nbsp;
 
 
