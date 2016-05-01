@@ -1,14 +1,14 @@
 package com.places.tarun.myplacessearch.listeners;
 
-/**
- * Created by razor on 12/7/15.
- */
+
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-
+/**
+ * Created by Tarun on 4/28/2016.
+ */
 
 public class RecyclerItemClickListener implements RecyclerView.OnItemTouchListener {
     private OnItemClickListener mListener;

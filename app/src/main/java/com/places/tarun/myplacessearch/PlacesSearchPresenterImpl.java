@@ -20,9 +20,9 @@ public class PlacesSearchPresenterImpl implements GoogleApiClient.ConnectionCall
     protected GoogleApiClient mGoogleApiClient;
     private MainActivity mainActivity;
     private PlacesAutoCompleteAdapter mAutoCompleteAdapter;
+    private PlaceDetailsInteractor placeDetailsInteractor;
     private static final LatLngBounds MAPS_BOUND = new LatLngBounds(
             new LatLng(-0, 0), new LatLng(0, 0));
-
 
     public PlacesSearchPresenterImpl(MainActivity mainActivity){
         this.mainActivity = mainActivity;
@@ -35,15 +35,47 @@ public class PlacesSearchPresenterImpl implements GoogleApiClient.ConnectionCall
         mAutoCompleteAdapter =  new PlacesAutoCompleteAdapter(mainActivity, R.layout.search_adapter,
                 mGoogleApiClient, MAPS_BOUND, null);
     }
+    public PlacesSearchPresenterImpl(PlaceDetailsActivity placeDetailsActivity){
+        mGoogleApiClient = new GoogleApiClient.Builder(placeDetailsActivity)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .addApi(Places.GEO_DATA_API)
+                .build();
+        placeDetailsInteractor = new PlaceDetailsInteractorImpl();
+    }
+
+    /*
+    * callPlacesAPI call from Main activity and invokes adapter to get auto complete results
+     */
     @Override
     public void callPlacesAPI(CharSequence s) {
         if(mGoogleApiClient.isConnected()) {
+            //get auto complete results from adapter
             mAutoCompleteAdapter.getFilter().filter(s.toString());
             mainActivity.setAutoCompletePlaces(mAutoCompleteAdapter);
-        }else if(!mGoogleApiClient.isConnected()){
+        }else {
             mainActivity.errorResponse();
             Log.e(Constants.PlacesTag,Constants.API_NOT_CONNECTED);
         }
+    }
+
+    /*
+    * Method returns placeID of the selected auto complete result.
+     */
+    @Override
+    public String callPlaceDetails(int position) {
+        final PlacesAutoComplete item = mAutoCompleteAdapter.getItem(position);
+        return String.valueOf(item.placeId);
+    }
+
+    /*
+    * Method calls the interactor and gets place Details
+     */
+    @Override
+    public PlaceDetails getPlaceDetails(String placeId) {
+        placeDetailsInteractor = new PlaceDetailsInteractorImpl();
+        return placeDetailsInteractor.getPlaceDetails(mGoogleApiClient, placeId);
     }
     @Override
     public void onResume() {

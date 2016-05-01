@@ -7,7 +7,8 @@ package com.places.tarun.myplacessearch;
 public interface PlacesSearchPresenter {
 
     void onResume();
-
     void callPlacesAPI(CharSequence s);
+    String callPlaceDetails(int position);
+    PlaceDetails getPlaceDetails(String placeId);
     void onPause();
 }

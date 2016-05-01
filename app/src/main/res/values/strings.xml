@@ -1,6 +1,10 @@
 <resources>
-    <string name="app_name">MyPlaces Search</string>
+    <string name="app_name">Search Places</string>
     <string name="autocomplete_hint">Search a Place</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="imagecontentdesc">Background Image of MainActivity</string>
+    <string name="searchplace">Search for a place</string>
+    <string name="locationpicker">location picker</string>
+    <string name="search">Search</string>
 </resources>

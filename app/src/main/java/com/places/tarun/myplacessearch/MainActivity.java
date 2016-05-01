@@ -1,140 +1,129 @@
 package com.places.tarun.myplacessearch;
 
-import android.support.v7.app.AppCompatActivity;
+import android.app.SearchManager;
+import android.content.Context;
+import android.content.Intent;
+import android.view.MotionEvent;
+import android.view.View;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.inputmethod.EditorInfo;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageView;
+import android.support.v7.widget.SearchView;
 import android.widget.Toast;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.PlaceBuffer;
-import com.google.android.gms.location.places.Places;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 
 import com.places.tarun.myplacessearch.adapters.PlacesAutoCompleteAdapter;
 import com.places.tarun.myplacessearch.listeners.RecyclerItemClickListener;
 import com.places.tarun.myplacessearch.utility.Constants;
 
-public class MainActivity extends AppCompatActivity implements  View.OnClickListener {
-    //protected GoogleApiClient mGoogleApiClient;
+public class MainActivity extends AppCompatActivity{
 
-
-
-    private EditText mAutocompleteView;
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLinearLayoutManager;
-    private PlacesAutoCompleteAdapter mAutoCompleteAdapter;
-
+    private SearchView searchView = null;
+    private SearchView.OnQueryTextListener queryTextListener;
     private PlacesSearchPresenter placesSearchPresenter;
-    ImageView delete;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mAutocompleteView = (EditText)findViewById(R.id.autocomplete_places);
-        delete=(ImageView)findViewById(R.id.cross);
+        //Tool bar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         mRecyclerView=(RecyclerView)findViewById(R.id.recyclerView);
         mLinearLayoutManager=new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
+        //Initializing Presenter
         placesSearchPresenter = new PlacesSearchPresenterImpl(this);
 
-        delete.setOnClickListener(this);
-        mAutocompleteView.addTextChangedListener(new TextWatcher() {
-
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-                if (!s.toString().equals("") && s.length()>2) {
-                    placesSearchPresenter.callPlacesAPI(s);
-                }
-            }
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-            }
-            public void afterTextChanged(Editable s) {
-            }
-        });
-/*        mRecyclerView.addOnItemTouchListener(
+        mRecyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        final PlacesAutoCompleteAdapter.PlaceAutocomplete item = mAutoCompleteAdapter.getItem(position);
-                        final String placeId = String.valueOf(item.placeId);
-                        Log.i("TAG", "Autocomplete item selected: " + item.description);
-                        *//*
-                             Issue a request to the Places Geo Data API to retrieve a Place object with additional details about the place.
-                         *//*
+                        String placeId = placesSearchPresenter.callPlaceDetails(position);
 
-                        PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
-                                .getPlaceById(mGoogleApiClient, placeId);
-                        placeResult.setResultCallback(new ResultCallback<PlaceBuffer>() {
-                            @Override
-                            public void onResult(PlaceBuffer places) {
-                                if(places.getCount()==1){
-                                    //Do the things here on Click.....
-                                    Toast.makeText(getApplicationContext(),String.valueOf(places.get(0).getLatLng()),Toast.LENGTH_SHORT).show();
-                                }else {
-                                    Toast.makeText(getApplicationContext(),Constants.SOMETHING_WENT_WRONG,Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-                        Log.i("TAG", "Clicked: " + item.description);
-                        Log.i("TAG", "Called getPlaceById to get Place details for " + item.placeId);
+                        Intent i = new Intent(MainActivity.this, PlaceDetailsActivity.class);
+                        i.putExtra("placeId", placeId);
+                        startActivity(i);
                     }
                 })
-        );*/
+        );
     }
 
-
-
+    /*
+    * onCreateOptionsMenu for searchView
+    */
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+    public boolean onCreateOptionsMenu(final Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        final MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        if (searchItem != null) {
+            searchView = (SearchView) searchItem.getActionView();
+        }
+        if (searchView != null) {
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+            searchView.setMaxWidth(Integer.MAX_VALUE);
+            searchView.setIconifiedByDefault(true);
+            searchView.setImeOptions(searchView.getImeOptions() | EditorInfo.IME_ACTION_SEARCH | EditorInfo.IME_FLAG_NO_EXTRACT_UI | EditorInfo.IME_FLAG_NO_FULLSCREEN);
+            //Search quuery listener
+            queryTextListener = new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    if (!newText.toString().equals("") && (newText.length()%2 ==1)) {
+                        //Presenter Call
+                        placesSearchPresenter.callPlacesAPI(newText);
+                    }
+                    return true;
+                }
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    return true;
+                }
+            };
+            // onClose listener
+            searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+                @Override
+                public boolean onClose() {
+                    mRecyclerView.setAdapter(null);
+                    searchView.onActionViewCollapsed();
+                    return true;
+                }
+            });
+            searchView.setOnQueryTextListener(queryTextListener);
+        }
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_search:
+                return false;
+            default:
+                break;
         }
-
+        searchView.setOnQueryTextListener(queryTextListener);
         return super.onOptionsItemSelected(item);
     }
-
 
     public void errorResponse(){
         Toast.makeText(getApplicationContext(), Constants.API_NOT_CONNECTED,Toast.LENGTH_SHORT).show();
     }
+
+    /*
+    * set auto complete results to recycler view.
+    */
     public void setAutoCompletePlaces(PlacesAutoCompleteAdapter mAutoCompleteAdapter){
         mRecyclerView.setAdapter(mAutoCompleteAdapter);
     }
 
-    @Override
-    public void onClick(View v) {
-        if(v==delete){
-            mAutocompleteView.setText("");
-        }
-    }
 
     @Override
     public void onResume() {

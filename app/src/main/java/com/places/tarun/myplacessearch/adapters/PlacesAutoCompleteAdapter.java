@@ -1,7 +1,7 @@
 package com.places.tarun.myplacessearch.adapters;
 
 /**
- * Created by razor on 12/7/15.
+ * Created by Tarun on 4/28/2016.
  */
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -12,6 +12,7 @@ import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.AutocompletePredictionBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.places.tarun.myplacessearch.PlacesAutoComplete;
 import com.places.tarun.myplacessearch.R;
 
 
@@ -24,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.RelativeLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,16 +33,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Note that this adapter requires a valid {@link GoogleApiClient}.
- * The API client must be maintained in the encapsulating Activity, including all lifecycle and
- * connection states. The API client must be connected with the {@link Places#GEO_DATA_API} API.
- */
 public class PlacesAutoCompleteAdapter
         extends RecyclerView.Adapter<PlacesAutoCompleteAdapter.PredictionHolder> implements Filterable {
 
     private static final String TAG = "PlacesAutoCompleteAdapter";
-    private ArrayList<PlaceAutocomplete> mResultList;
+    private ArrayList<PlacesAutoComplete> mResultList;
     private GoogleApiClient mGoogleApiClient;
     private LatLngBounds mBounds;
     private AutocompleteFilter mPlaceFilter;
@@ -100,9 +97,9 @@ public class PlacesAutoCompleteAdapter
         return filter;
     }
 
-    private ArrayList<PlaceAutocomplete> getAutocomplete(CharSequence constraint) {
+    private ArrayList<PlacesAutoComplete> getAutocomplete(CharSequence constraint) {
         if (mGoogleApiClient.isConnected()) {
-            Log.i("", "Starting autocomplete query for: " + constraint);
+            Log.i(TAG, "Starting autocomplete query for: " + constraint);
 
             // Submit the query to the autocomplete API and retrieve a PendingResult that will
             // contain the results when the query completes.
@@ -126,7 +123,7 @@ public class PlacesAutoCompleteAdapter
                 return null;
             }
 
-            Log.i("", "Query completed. Received " + autocompletePredictions.getCount()
+            Log.i(TAG, "Query completed. Received " + autocompletePredictions.getCount()
                     + " predictions.");
 
             // Copy the results into our own data structure, because we can't hold onto the buffer.
@@ -137,7 +134,7 @@ public class PlacesAutoCompleteAdapter
             while (iterator.hasNext()) {
                 AutocompletePrediction prediction = iterator.next();
                 // Get the details of this prediction and copy it into a new PlaceAutocomplete object.
-                resultList.add(new PlaceAutocomplete(prediction.getPlaceId(),
+                resultList.add(new PlacesAutoComplete(prediction.getPlaceId(),
                         prediction.getDescription()));
             }
 
@@ -146,7 +143,7 @@ public class PlacesAutoCompleteAdapter
 
             return resultList;
         }
-        Log.e("", "Google API client is not connected for autocomplete query.");
+        Log.e(TAG, "Google API client is not connected for autocomplete query.");
         return null;
     }
 
@@ -161,12 +158,7 @@ public class PlacesAutoCompleteAdapter
     @Override
     public void onBindViewHolder(PredictionHolder mPredictionHolder, final int i) {
         mPredictionHolder.mPrediction.setText(mResultList.get(i).description);
-        /*mPredictionHolder.mRow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mGetLatLonCallback.getLocation(resultList.get(i).toString());
-            }
-        });*/
+
     }
 
     @Override
@@ -177,7 +169,7 @@ public class PlacesAutoCompleteAdapter
             return 0;
     }
 
-    public PlaceAutocomplete getItem(int position) {
+    public PlacesAutoComplete getItem(int position) {
         return mResultList.get(position);
     }
 
@@ -189,28 +181,9 @@ public class PlacesAutoCompleteAdapter
             super(itemView);
             mPrediction = (TextView) itemView.findViewById(R.id.address);
             mRow=(RelativeLayout)itemView.findViewById(R.id.predictedRow);
-        }
-
-    }
-
-    /**
-     * Holder for Places Geo Data Autocomplete API results.
-     */
-    public class PlaceAutocomplete {
-
-        public CharSequence placeId;
-        public CharSequence description;
-
-        PlaceAutocomplete(CharSequence placeId, CharSequence description) {
-            this.placeId = placeId;
-            this.description = description;
-        }
-
-        @Override
-        public String toString() {
-            return description.toString();
+            mRow.setLayoutParams(new TableLayout.LayoutParams(
+                    TableLayout.LayoutParams.WRAP_CONTENT,
+                    TableLayout.LayoutParams.WRAP_CONTENT));
         }
     }
-
-
 }

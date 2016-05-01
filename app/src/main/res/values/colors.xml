@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="grey">#e3e3e3</color>
+    <color name="colorPrimaryDark">#0000A0</color>
+    <color name="colorPrimary">#CB0037</color>
+    <color name="black">#000</color>
+    <color name="shadowColor">#ff0000</color>
+    <color name="placeColor">#BF0039</color>
+    <color name="bgColor">#fcfced</color>
 </resources>
