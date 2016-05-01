@@ -46,7 +46,7 @@ public class PlacesAutoCompleteAdapter
     private int layout;
 
     public PlacesAutoCompleteAdapter(Context context, int resource, GoogleApiClient googleApiClient,
-                                    LatLngBounds bounds, AutocompleteFilter filter) {
+                                     LatLngBounds bounds, AutocompleteFilter filter) {
         mContext = context;
         layout = resource;
         mGoogleApiClient = googleApiClient;

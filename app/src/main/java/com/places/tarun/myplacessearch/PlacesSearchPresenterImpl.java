@@ -10,8 +10,8 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.places.tarun.myplacessearch.adapters.PlacesAutoCompleteAdapter;
 import com.places.tarun.myplacessearch.utility.Constants;
+import com.places.tarun.myplacessearch.adapters.PlacesAutoCompleteAdapter;
 
 /**
  * Created by Tarun on 4/28/2016.

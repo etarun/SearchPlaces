@@ -3,7 +3,6 @@ package com.places.tarun.myplacessearch;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.os.Bundle;
 import android.view.Menu;
