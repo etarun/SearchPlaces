@@ -26,6 +26,7 @@ public class PlaceDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.places_details);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setIcon(R.mipmap.searchplaces_icon);
         //Initializing Presenter
         placesSearchPresenter = new PlacesSearchPresenterImpl(this);
         text1 = (TextView) findViewById(R.id.text1);

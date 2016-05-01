@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity{
         //Tool bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setIcon(R.mipmap.searchplaces_icon);
 
         mRecyclerView=(RecyclerView)findViewById(R.id.recyclerView);
         mLinearLayoutManager=new LinearLayoutManager(this);
