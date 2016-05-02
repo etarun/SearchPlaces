@@ -2,6 +2,7 @@ package com.places.tarun.myplacessearch.adapters;
 
 /**
  * Created by Tarun on 4/28/2016.
+ * Get autocomplete results and set them to Recycler View.
  */
 
 import com.google.android.gms.common.api.GoogleApiClient;

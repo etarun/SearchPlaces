@@ -22,6 +22,7 @@
             android:textColor="@color/placeColor"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
             android:textStyle="normal"
             android:id="@+id/text2">
         </TextView>
